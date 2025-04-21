@@ -15,6 +15,46 @@ const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 camera.position.z = 2;
 const scene = new THREE.Scene();
 
+function createGradientCanvas(topColor, bottomColor) {
+    const size = 512;
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+  
+    const gradient = ctx.createLinearGradient(0, 0, 0, size);
+    gradient.addColorStop(0, topColor);
+    gradient.addColorStop(1, bottomColor);
+  
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+  
+    return canvas;
+  }
+  
+  function createGradientCubeTexture() {
+    const faces = [
+      ['#ffffff', '#dbfff1'], // px (side)
+      ['#ffffff', '#dbfff1'], // nx
+      ['#ffffff', '#ffffff'], // py (top)
+      ['#dbfff1', '#dbfff1'], // ny (bottom)
+      ['#ffffff', '#dbfff1'], // pz
+      ['#ffffff', '#dbfff1'], // nz
+    ];
+  
+    const canvases = faces.map(([top, bottom]) =>
+      new THREE.CanvasTexture(createGradientCanvas(top, bottom))
+    );
+  
+    const cubeTexture = new THREE.CubeTexture(canvases.map(tex => tex.image));
+    cubeTexture.needsUpdate = true;
+  
+    return cubeTexture;
+  }
+  
+  scene.background = createGradientCubeTexture();
+  
+
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.03;
