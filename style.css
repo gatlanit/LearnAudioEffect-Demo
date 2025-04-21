@@ -1,0 +1,8 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background: linear-gradient(to top, #00c6ff, #0072ff); /* Gradient background */
+}
+canvas {
+    display: block;
+}
