@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'jsm/controls/OrbitControls.js';
-import { createGradientCubeTexture } from './skybox.js';
+// import { createGradientCubeTexture } from './skybox.js';
 
 // Renderer
 const w = window.innerWidth;
 const h = window.innerHeight;
 
-const renderer = new THREE.WebGLRenderer({antialias: true });
+const renderer = new THREE.WebGLRenderer({antialias: true, alpha: true });
 renderer.setSize(w, h);
 renderer.setPixelRatio(window.devicePixelRatio);
 document.body.appendChild(renderer.domElement);
@@ -17,7 +17,7 @@ camera.position.z = 2;
 
 // Scene
 const scene = new THREE.Scene(); 
-scene.background = createGradientCubeTexture();
+//scene.background = createGradientCubeTexture(); // Skybox
 
 // Controller
 const controller = new OrbitControls(camera, renderer.domElement);
@@ -25,10 +25,11 @@ controller.enableDamping = true;
 controller.dampingFactor = 0.03;
 
 // Lights
-const hemiLight = new THREE.HemisphereLight(0xffffff, 0xff0062);
+const highlight = 0xff0062 // Color of highlights
+const hemiLight = new THREE.HemisphereLight(0xffffff, highlight);
 scene.add(hemiLight);
 
-const ambientLight = new THREE.AmbientLight(0x42ecf5, 1);
+const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
 scene.add(ambientLight);
 
 // Model
@@ -42,7 +43,7 @@ scene.add(mesh);
 
 // Wireframe
 const wireMaterial = new THREE.MeshBasicMaterial({
-    color: 0xffffff,
+    color: 0x000000,
     wireframe: true
 });
 const wireMesh = new THREE.Mesh(model, wireMaterial);
