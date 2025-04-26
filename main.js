@@ -33,7 +33,7 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
 scene.add(ambientLight);
 
 // Model
-const model = new THREE.IcosahedronGeometry(1.0, 2);
+const model = new THREE.IcosahedronGeometry(0.5 , 2);
 const material = new THREE.MeshStandardMaterial({
     color: 0xffffff,
     flatShading: true
