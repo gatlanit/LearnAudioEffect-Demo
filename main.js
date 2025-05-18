@@ -50,11 +50,26 @@ const wireMesh = new THREE.Mesh(model, wireMaterial);
 wireMesh.scale.setScalar(1.001); // Scale up wiremesh slightly so that it doesn't cause z fighting in mesh
 mesh.add(wireMesh);
 
+// Inputs
+const gainToggle = document.getElementById('gain-toggle');
+let spinning = gainToggle.checked;
+
+gainToggle.addEventListener('change', () => {
+    spinning = gainToggle.checked;
+})
+
 // Rendering Loop
 function animate(t = 0) {
     requestAnimationFrame(animate);
-    renderer.render(scene, camera);
+
+    // Scene actions
+    if (spinning) {
+        mesh.rotation.x += 0.005;
+        mesh.rotation.y += 0.01;
+    }
+
     controller.update();
+    renderer.render(scene, camera);
 }
 animate();
 
