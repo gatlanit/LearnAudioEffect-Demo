@@ -17,11 +17,17 @@
   <body>
     <!-- UI overlay over threeJS scene-->
     <div class="ui-overlay">
+
       <div class="toggle">
         <input type="checkbox" id="gain-toggle">
         <span class="button"></span>
         <span class="label">⏻</span>
       </div>
+
+      <div class="fader">
+        <input type="range" id="gain" min="0" max="127" value="50" orient="vertical">
+      </div>
+      
     </div>
     <script type="module" src="main.js"></script> 
   </body>

@@ -50,23 +50,45 @@ const wireMesh = new THREE.Mesh(model, wireMaterial);
 wireMesh.scale.setScalar(1.001); // Scale up wiremesh slightly so that it doesn't cause z fighting in mesh
 mesh.add(wireMesh);
 
-// Inputs
+// Inputs DOM ELEMENTS
 const gainToggle = document.getElementById('gain-toggle');
-let spinning = gainToggle.checked;
+const gainFader = document.getElementById('gain');
 
 gainToggle.addEventListener('change', () => {
     spinning = gainToggle.checked;
 })
 
+// ThreeJS clock (Delta Time)
+var clock = new THREE.Clock();
+var delta = 0
+
+// Variables
+let spinning = gainToggle.checked;
+var speed = 0;
+var max_speed = 0.5
+var acceleration = 3;
+
 // Rendering Loop
 function animate(t = 0) {
     requestAnimationFrame(animate);
+    delta = clock.getDelta();
 
     // Scene actions
-    if (spinning) {
-        mesh.rotation.x += 0.005;
-        mesh.rotation.y += 0.01;
+
+    // Spin ball with acceleration when plugin turned on
+    if (spinning && speed <= max_speed) {
+        speed += delta * acceleration;
+    } else if (!spinning) {
+        if (speed > 0) {
+            speed -= delta * acceleration;
+        }
+        else {
+            speed = 0;
+        }
     }
+
+    mesh.rotation.x += delta * speed;
+    mesh.rotation.y += delta * speed * 2;
 
     controller.update();
     renderer.render(scene, camera);
