@@ -24,6 +24,15 @@ const controller = new OrbitControls(camera, renderer.domElement);
 controller.enableDamping = true;
 controller.dampingFactor = 0.03;
 
+// Audio CTX
+const listener = new THREE.AudioListener();
+camera.add( listener );
+
+const sound = new THREE.Audio( listener );
+
+const audioLoader = new THREE.AudioLoader();
+
+
 // Lights
 const highlight = 0xff0062 // Color of highlights
 const hemiLight = new THREE.HemisphereLight(0xffffff, highlight);
@@ -56,6 +65,19 @@ const gainFader = document.getElementById('gain');
 
 gainToggle.addEventListener('change', () => {
     spinning = gainToggle.checked;
+
+    // Play audio
+    audioLoader.load('./assets/audio/Demo.wav', function(buffer) {
+	    sound.setBuffer(buffer);
+        window.addEventListener('click', function() {
+            sound.loop = true;
+            if (gainToggle.checked) {
+                sound.play();
+            } else {
+                sound.stop();
+            }
+        });
+    });
 })
 
 // ThreeJS clock (Delta Time)
