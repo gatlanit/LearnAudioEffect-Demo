@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Learn Audio Effects DEMO</title>
+    <!-- Replace Icon with SVG -->
+    <link rel="icon" href="favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="style.css">
     <script type="importmap">
 			{
@@ -19,13 +21,13 @@
     <div class="ui-overlay">
 
       <div class="toggle">
-        <input type="checkbox" id="gain-toggle">
+        <input type="checkbox" id="gain-toggle" autocomplete="off">
         <span class="button"></span>
         <span class="label">⏻</span>
       </div>
 
       <div class="fader">
-        <input type="range" id="gain" min="0" max="127" value="50" orient="vertical">
+        <input type="range" id="gain" min="0" max="127" value="64" orient="vertical" autocomplete="off">
       </div>
       
     </div>
