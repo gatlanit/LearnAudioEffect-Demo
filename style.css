@@ -6,6 +6,7 @@ html, body {
   overflow: hidden;
   height: 100%;
   width: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, sans-serif;
 }
 
 /* UI-Overlay */
@@ -116,15 +117,26 @@ canvas {
   position: relative;
   top: 25%;
   width: 8px;
-  left: 20px;
+  left: 80px;
   z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.fader label {
+  font-weight: 400;
+  font-size: 20px;
+  color: rgba(55, 55, 55, 0.9)
 }
 
 input[type="range"]::-moz-range-track {
   width: 6px;
-  height: 100%;
+  height: 97%; /* Get rid of excess on ends */
   background: #ced3d4;
-  border-radius: 8px;
+  border-radius: 4px;
   box-shadow: 0 0 2px rgba(0,0,0,0.8);
 }
 
@@ -132,7 +144,7 @@ input[type="range"]::-moz-range-thumb {
   width: 20px;
   height: 7px;
   background: #333;
-  border: 4px solid #f9faf4;
+  border: 4px solid #f9f9f9;
   border-radius: 16px;
   cursor: pointer;
   box-shadow: 0 0 2px rgba(0,0,0,0.5), /* Outline */

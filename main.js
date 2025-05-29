@@ -31,6 +31,21 @@ camera.add( listener );
 const sound = new THREE.Audio( listener );
 
 const audioLoader = new THREE.AudioLoader();
+// TODO: Make it allow for other audios
+audioLoader.load('./assets/audio/Demo.wav', function(buffer) {
+    sound.setBuffer(buffer);
+    sound.setLoop(true);
+
+    // === GAIN CONTROL ===
+    const gainNode = sound.getOutput();
+    gainNode.gain.value = gainFader.value / 127;
+
+    gainFader.addEventListener('input', () => {
+        const value = gainFader.value;
+        const normalized = value / 127;
+        gainNode.gain.setValueAtTime(normalized, sound.context.currentTime);
+    });
+});
 
 
 // Lights
@@ -63,22 +78,33 @@ mesh.add(wireMesh);
 const gainToggle = document.getElementById('gain-toggle');
 const gainFader = document.getElementById('gain');
 
+// First time play (Toggle)
+window.addEventListener('click', () => {
+    if (gainToggle.checked && !sound.isPlaying) {
+        sound.play();
+    }
+});
+
 gainToggle.addEventListener('change', () => {
     spinning = gainToggle.checked;
 
-    // Play audio
-    audioLoader.load('./assets/audio/Demo.wav', function(buffer) {
-	    sound.setBuffer(buffer);
-        window.addEventListener('click', function() {
-            sound.loop = true;
-            if (gainToggle.checked) {
-                sound.play();
-            } else {
-                sound.stop();
-            }
-        });
-    });
-})
+    if (gainToggle.checked) {
+        if (!sound.isPlaying) {
+            sound.play();
+        }
+    } else {
+        if (sound.isPlaying) {
+            sound.stop();
+        }
+    }
+});
+
+// Connect gain fader to gain node
+gainFader.addEventListener('input', () => {
+    const value = gainFader.value;
+    const normalized = value / 127;
+    gainNode.gain.setValueAtTime(normalized, sound.context.currentTime);
+});
 
 // ThreeJS clock (Delta Time)
 var clock = new THREE.Clock();
