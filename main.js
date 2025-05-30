@@ -2,153 +2,177 @@ import * as THREE from 'three';
 import { OrbitControls } from 'jsm/controls/OrbitControls.js';
 // import { createGradientCubeTexture } from './skybox.js';
 
-// Renderer
+// ------------------- SETUP ------------------ 
+
 const w = window.innerWidth;
 const h = window.innerHeight;
 
-const renderer = new THREE.WebGLRenderer({antialias: true, alpha: true });
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.setSize(w, h);
 renderer.setPixelRatio(window.devicePixelRatio);
 document.body.appendChild(renderer.domElement);
 
-// Camera
 const camera = new THREE.PerspectiveCamera(90, w / h, 0.1, 10);
 camera.position.z = 2;
 
-// Scene
-const scene = new THREE.Scene(); 
-//scene.background = createGradientCubeTexture(); // Skybox
+const scene = new THREE.Scene();
+// scene.background = createGradientCubeTexture(); // Skybox
 
-// Controller
+// ------------------- CONTROLS ------------------ 
+
 const controller = new OrbitControls(camera, renderer.domElement);
 controller.enableDamping = true;
 controller.dampingFactor = 0.03;
 
-// Audio CTX
+// ------------------- AUDIO SETUP ------------------
+
+// Create an AudioListener and add it to the camera
 const listener = new THREE.AudioListener();
-camera.add( listener );
+camera.add(listener); // Not gonna need it but why not lol
 
-const sound = new THREE.Audio( listener );
+// Create a global audio source and analyser
+const sound = new THREE.Audio(listener);
+const analyser = new THREE.AudioAnalyser(sound, 128); // 128 frequency bins
 
+// Load audio file asynchronously
 const audioLoader = new THREE.AudioLoader();
-// TODO: Make it allow for other audios
-audioLoader.load('./assets/audio/Demo.wav', function(buffer) {
-    sound.setBuffer(buffer);
-    sound.setLoop(true);
+let gainNode; // GainNode to control volume dynamically
 
-    // === GAIN CONTROL ===
-    const gainNode = sound.getOutput();
-    gainNode.gain.value = gainFader.value / 127;
+audioLoader.load('./assets/audio/Demo.wav', (buffer) => {
+  sound.setBuffer(buffer);
+  sound.setLoop(true);
 
-    gainFader.addEventListener('input', () => {
-        const value = gainFader.value;
-        const normalized = value / 127;
-        gainNode.gain.setValueAtTime(normalized, sound.context.currentTime);
-    });
+  // Gain control node for volume adjustment
+  gainNode = sound.getOutput();
+
+  // Set initial gain based on fader value
+  const gainValue = gainFader.value / 127;
+  gainNode.gain.value = gainValue;
 });
 
+// ----------------- DOM ELEMENTS & EVENT LISTENERS ------------------ 
 
-// Lights
-const highlight = 0xff0062 // Color of highlights
+const gainToggle = document.getElementById('gain-toggle');
+const gainFader = document.getElementById('gain');
+
+let spinning = gainToggle.checked; // Controls whether mesh spins & audio plays
+
+// Play audio when user clicks, but only if toggle is on and sound not playing
+window.addEventListener('click', () => {
+  if (gainToggle.checked && !sound.isPlaying) {
+    sound.play();
+  }
+});
+
+// Toggle spinning and audio playback when gainToggle changes
+gainToggle.addEventListener('change', () => {
+  spinning = gainToggle.checked;
+  if (spinning && !sound.isPlaying) {
+    sound.play();
+  } else if (!spinning && sound.isPlaying) {
+    sound.stop();
+  }
+});
+
+// Adjust gain in real time based on fader input
+gainFader.addEventListener('input', () => {
+  const normalized = gainFader.value / 127;
+  if (gainNode) {
+    // Smoothly set gain to avoid clicks
+    gainNode.gain.setValueAtTime(normalized, sound.context.currentTime);
+  }
+});
+
+// ------------------ LIGHTS ------------------ 
+
+const highlight = 0xff0062; // Highlight color
 const hemiLight = new THREE.HemisphereLight(0xffffff, highlight);
 scene.add(hemiLight);
 
 const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
 scene.add(ambientLight);
 
-// Model
-const model = new THREE.IcosahedronGeometry(0.5 , 2);
+// ------------------ MODEL & MATERIALS ------------------ 
+
+const geometry = new THREE.IcosahedronGeometry(0.5, 2);
+
 const material = new THREE.MeshStandardMaterial({
-    color: 0xffffff,
-    flatShading: true
+  color: 0xffffff,
+  flatShading: true,
 });
-const mesh = new THREE.Mesh(model, material);
+
+const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
 
-// Wireframe
+// Wireframe overlay to give model some edge details
 const wireMaterial = new THREE.MeshBasicMaterial({
-    color: 0x000000,
-    wireframe: true
+  color: 0x000000,
+  wireframe: true,
 });
-const wireMesh = new THREE.Mesh(model, wireMaterial);
-wireMesh.scale.setScalar(1.001); // Scale up wiremesh slightly so that it doesn't cause z fighting in mesh
+const wireMesh = new THREE.Mesh(geometry, wireMaterial);
+wireMesh.scale.setScalar(1.001); // Slightly bigger to prevent z-fighting
 mesh.add(wireMesh);
 
-// Inputs DOM ELEMENTS
-const gainToggle = document.getElementById('gain-toggle');
-const gainFader = document.getElementById('gain');
+// ------------------ ANIMATION & AUDIO VISUALIZATION ------------------ 
 
-// First time play (Toggle)
-window.addEventListener('click', () => {
-    if (gainToggle.checked && !sound.isPlaying) {
-        sound.play();
+const clock = new THREE.Clock();
+let delta = 0;
+
+let speed = 0;
+const maxSpeed = 0.5;
+const acceleration = 3;
+
+let smoothedScale = 0;
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  delta = clock.getDelta();
+
+  // Spin the mesh with acceleration/deceleration based on toggle state
+  if (spinning && speed < maxSpeed) {
+    speed += delta * acceleration;
+  } else if (!spinning && speed > 0) {
+    speed -= delta * acceleration;
+  }
+  speed = THREE.MathUtils.clamp(speed, 0, maxSpeed);
+
+  mesh.rotation.x += delta * speed;
+  mesh.rotation.y += delta * speed * 2;
+
+  // Audio visualization: scale mesh based on bass frequencies
+  if (analyser) {
+    const freqData = analyser.getFrequencyData();
+
+    // Sum bass frequencies (bins 0-9)
+    let bassSum = 0;
+    for (let i = 0; i < 10; i++) {
+      bassSum += freqData[i];
     }
-});
+    const bassAvg = bassSum / 10;
 
-gainToggle.addEventListener('change', () => {
-    spinning = gainToggle.checked;
+    // Map bass amplitude to scale factor
+    const audioFactor = bassAvg / 64; // Normalize roughly to [0,2]
+    const baseScale = 1;
+    const dynamicRange = 0.1;
+    const targetScale = baseScale + audioFactor * dynamicRange;
 
-    if (gainToggle.checked) {
-        if (!sound.isPlaying) {
-            sound.play();
-        }
-    } else {
-        if (sound.isPlaying) {
-            sound.stop();
-        }
-    }
-});
+    // Smooth scaling to avoid jitter
+    smoothedScale = THREE.MathUtils.lerp(smoothedScale, targetScale, 0.1);
+    mesh.scale.set(smoothedScale, smoothedScale, smoothedScale);
+  }
 
-// Connect gain fader to gain node
-gainFader.addEventListener('input', () => {
-    const value = gainFader.value;
-    const normalized = value / 127;
-    gainNode.gain.setValueAtTime(normalized, sound.context.currentTime);
-});
-
-// ThreeJS clock (Delta Time)
-var clock = new THREE.Clock();
-var delta = 0
-
-// Variables
-let spinning = gainToggle.checked;
-var speed = 0;
-var max_speed = 0.5
-var acceleration = 3;
-
-// Rendering Loop
-function animate(t = 0) {
-    requestAnimationFrame(animate);
-    delta = clock.getDelta();
-
-    // Scene actions
-
-    // Spin ball with acceleration when plugin turned on
-    if (spinning && speed <= max_speed) {
-        speed += delta * acceleration;
-    } else if (!spinning) {
-        if (speed > 0) {
-            speed -= delta * acceleration;
-        }
-        else {
-            speed = 0;
-        }
-    }
-
-    mesh.rotation.x += delta * speed;
-    mesh.rotation.y += delta * speed * 2;
-
-    controller.update();
-    renderer.render(scene, camera);
+  controller.update();
+  renderer.render(scene, camera);
 }
+
 animate();
 
-// Resize window
-window.addEventListener('resize', onWindowResize);
+// ------------------ HANDLE WINDOW RESIZE ------------------
 
-function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-}
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
