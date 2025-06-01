@@ -2,6 +2,17 @@ import * as THREE from 'three';
 import { OrbitControls } from 'jsm/controls/OrbitControls.js';
 // import { createGradientCubeTexture } from './skybox.js';
 
+/*
+TODO: (By Priority)
+  - Refactor UI to be modular (Allow for switching and Effect Bypass)
+  - Work on other effects
+    - Reverb (Fog)
+    - Filters (Fade top to bottom depending on frequency bad affected)
+    - Delays (Duplications that fade)
+    - Compressors (Change Focal length of camera to add or remove depth depending on compression settings)
+    - Stereo (Bundle with Utility)  (Toggle between orthographic and perspective with focal length shift that moves closer and closer to Orthographic)
+*/
+
 // ------------------- SETUP ------------------ 
 
 const w = window.innerWidth;

@@ -19,13 +19,22 @@ function createGradientCanvas(topColor, bottomColor) {
 
 export function createGradientCubeTexture() {
   const faces = [
+    ['#ffffff', '#ffffff'], // px (side) *
+    ['#ffffff', '#ffffff'], // nx *
+    ['#ffffff', '#ffffff'], // py (top) *
+    ['#ffffff', '#ffffff'], // ny (bottom) *
+    ['#ffffff', '#ffffff'], // pz *
+    ['#ffffff', '#ffffff'], // nz *
+  ];
+
+  /*
     ['#dbfff1', '#fce6f1'], // px (side) *
     ['#dbfff1', '#fce6f1'], // nx *
     ['#dbfff1', '#dbfff1'], // py (top) *
     ['#fce6f1', '#fce6f1'], // ny (bottom) *
     ['#dbfff1', '#fce6f1'], // pz *
     ['#dbfff1', '#fce6f1'], // nz *
-  ];
+  */
 
   const canvases = faces.map(([top, bottom]) =>
     new THREE.CanvasTexture(createGradientCanvas(top, bottom))
