@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gain | Learn Audio Effects</title>
+    <!-- Replace Icon with SVG -->
+    <link rel="icon" href="favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    <script type="importmap">
+			{
+				"imports": {
+					"three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
+          "jsm/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
+        }
+			}
+		</script>
+  </head>
+  <body>
+    <!-- UI overlay over threeJS scene-->
+    <div class="ui-overlay">
+      
+      <div class="hamburger-container">
+        <input type="checkbox" id="menu-toggle" />
+        
+        <label class="hamburger" for="menu-toggle">
+          <svg viewBox="0 0 32 32">
+            <path class="line line-top-bottom" d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"></path>
+            <path class="line" d="M7 16 27 16"></path>
+          </svg>
+        </label>
+        
+        <div class="dynamic_sidebar">
+          <ul>
+            <li><a href="index.html">Start</a></li>
+            <li><a href="gain.html">Gain</a></li>
+            <li><a href="#">Deley/Echo</a></li>
+            <li><a href="#">Reverb</a></li>
+            <li><a href="#">Saturation</a></li>
+            <li><a href="#">Filters & Equalization</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="toggle">
+        <input type="checkbox" id="gain-toggle" autocomplete="off">
+        <span class="button"></span>
+        <span class="label">⏻</span>
+      </div>
+
+      <div class="fader">
+        <input type="range" id="gain" min="0" max="127" value="64" orient="vertical">
+        <label for="gain">Gain</label>
+      
+    </div>
+    <script type="module" src="main.js"></script> 
+  </body>
+</html>

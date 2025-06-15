@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'jsm/controls/OrbitControls.js';
+// import { OrbitControls } from 'jsm/controls/OrbitControls.js';
 // import { createGradientCubeTexture } from './skybox.js';
 
 /*
@@ -31,9 +31,9 @@ const scene = new THREE.Scene();
 
 // ------------------- CONTROLS ------------------ 
 
-const controller = new OrbitControls(camera, renderer.domElement);
-controller.enableDamping = true;
-controller.dampingFactor = 0.03;
+// const controller = new OrbitControls(camera, renderer.domElement);
+// controller.enableDamping = true;
+// controller.dampingFactor = 0.03;
 
 // ------------------- AUDIO SETUP ------------------
 
@@ -173,7 +173,7 @@ function animate() {
     mesh.scale.set(smoothedScale, smoothedScale, smoothedScale);
   }
 
-  controller.update();
+  // controller.update();
   renderer.render(scene, camera);
 }
 
