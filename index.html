@@ -3,16 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Learn Audio Effects DEMO</title>
+    <title>Learn Audio Effects</title>
     <link rel="icon" href="favicon.png" type="image/x-icon" />
     <link href="https://fonts.googleapis.com/css?family=Jost" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="static_sidebar">
-      <div class="sidebar-label">Chapters</div>
+    <!-- Layout container -->
+    <div class="page_layout">
+      <!-- Static Sidebar -->
+      <div class="static_sidebar">
+        <div class="sidebar-label">Chapters</div>
+      </div>
+
+      <!-- Page Wrapper (contains header, content, and footer) -->
+      <div class="content_wrapper">
+        <!-- Header -->
+        <header class="page_header" onclick="toggleSidebar()">
+          <h2>
+            Learn Audio Effects <span class="chapter-title">– Get started</span>
+          </h2>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main_content">
+          <h1>Introduction</h1>
+          <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Omnis rem doloribus culpa magni voluptatem! Ipsa dicta voluptates corrupti, deserunt sunt hic explicabo id saepe vero, obcaecati quae recusandae magnam officiis.</p>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore esse fuga hic error consectetur enim dolor pariatur eius voluptates aut, ducimus soluta necessitatibus obcaecati numquam natus beatae recusandae quo eum.</p>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolore esse fuga hic error consectetur enim dolor pariatur eius voluptates aut, ducimus soluta necessitatibus obcaecati numquam natus beatae recusandae quo eum.</p>
+        </main>
+
+        <!-- Footer -->
+        <footer class="page_footer">
+          <a href="https://github.com/gatlanit/LearnAudioEffect-Demo" target="_blank">GitHub Repo</a>
+          <a href="https://gatlanit.github.io/" target="_blank">By Nitin Gatla</a>
+          <a href="https://learningsynths.ableton.com/" target="_blank">Inspired by Ableton's Learning Synth</a>
+        </footer>
+      </div>
     </div>
 
+    <!-- Hamburger Button -->
     <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu">
       <svg viewBox="0 0 32 32">
         <path class="line line-top-bottom" d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22" />
@@ -20,24 +50,30 @@
       </svg>
     </button>
 
+    <!-- Dynamic Sidebar -->
     <nav class="dynamic_sidebar" id="sidebar">
-      <ul>
-        <li><a href="index.html">Get started</a></li>
-        <li><a href="gain.html">Gain</a></li>
-        <li><a href="#">Delay/Echo</a></li>
-        <li><a href="#">Reverb</a></li>
-        <li><a href="#">Saturation</a></li>
-        <li><a href="#">Filters & Equalization</a></li>
-      </ul>
+      <div class="sidebar-scroll">
+        <ul>
+          <li><a href="index.html">Get started</a></li>
+          <li><a href="gain.html">Gain</a></li>
+          <li><a href="#">Delay/Echo</a></li>
+          <li><a href="#">Reverb</a></li>
+          <li><a href="#">Saturation</a></li>
+          <li><a href="#">Filters & Equalization</a></li>
+          <li><a href="#">Learning more</a></li>
+        </ul>
+      </div>
     </nav>
 
+    <!-- Script -->
     <script>
       const button = document.getElementById("hamburger-btn");
       const sidebar = document.getElementById("sidebar");
-      button.addEventListener("click", () => {
+      function toggleSidebar() {
         sidebar.classList.toggle("open");
         button.classList.toggle("active");
-      });
+      }
+      button.addEventListener("click", toggleSidebar);
     </script>
   </body>
 </html>
