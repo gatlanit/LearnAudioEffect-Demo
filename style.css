@@ -47,7 +47,7 @@ html, body {
 
 /* === Header === */
 .page_header {
-  padding: 4em 8.8em;
+  padding: 2.4em 8.8em;
 }
 
 .page_header h2 {
@@ -108,7 +108,7 @@ p {
 .hamburger {
   cursor: pointer;
   position: fixed;
-  top: 58px;
+  top: 30px;
   left: 16px;
   background: none;
   border: none;
